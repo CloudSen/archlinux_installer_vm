@@ -18,15 +18,15 @@ function checkConfig() {
         mkdir ./log
     fi
     if [[ -z ${rootPassword} ]]; then
-        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh"
+        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh" >> ./log/info.log
         exit 127
     fi
     if [[ -z ${username} ]]; then
-        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh"
+        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh" >> ./log/info.log
         exit 127
     fi
     if [[ -z ${password} ]]; then
-        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh"
+        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh" >> ./log/info.log
         exit 127
     fi
 }
