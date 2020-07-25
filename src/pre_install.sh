@@ -32,6 +32,7 @@ function checkNetwork() {
     if [[ $? -eq 0 ]]; then
         echo "[ PRE-INSTALL ] You are online" >> ./log/info.log
     else
+        echo "[ PRE-INSTALL ] You are offline, please check your internet" >> ./log/error.log
         exit 127
     fi
 }
@@ -124,17 +125,17 @@ function configSystem() {
     echo "[ PRE-INSTALL ] Setting hosts ..." >> ./log/info.log
     source ./src/hosts_template.sh > etc/hosts
     if [[ -z ${rootPassword} ]]; then
-        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh" >> ./log/info.log
+        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh" >> ./log/error.log
         exit 127
     fi
     echo "[ PRE-INSTALL ] Changing root passwd to ${rootPassword} ..." >> ./log/info.log
     echo "root:${rootPassword}" | chpasswd
     if [[ -z ${username} ]]; then
-        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh" >> ./log/info.log
+        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh" >> ./log/error.log
         exit 127
     fi
     if [[ -z ${password} ]]; then
-        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh" >> ./log/info.log
+        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh" >> ./log/error.log
         exit 127
     fi
     echo "[ PRE-INSTALL ] Creating user ${username} with passwod ${password} ..." >> ./log/info.log
