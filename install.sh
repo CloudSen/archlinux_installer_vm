@@ -10,11 +10,31 @@
 source ./conf/config.sh
 source ./src/pre_install.sh
 
-clear
-if [[ -d ./log ]]; then
-    rm -f ./log/info.log
-    rm -f ./log/error.log
-else
-    mkdir ./log
-fi
-doPreInstall
+function checkConfig() {
+    if [[ -d ./log ]]; then
+        rm -f ./log/info.log
+        rm -f ./log/error.log
+    else
+        mkdir ./log
+    fi
+    if [[ -z ${rootPassword} ]]; then
+        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh"
+        exit 127
+    fi
+    if [[ -z ${username} ]]; then
+        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh"
+        exit 127
+    fi
+    if [[ -z ${password} ]]; then
+        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh"
+        exit 127
+    fi
+}
+
+function doInstall() {
+    clear
+    checkConfig
+    doPreInstall
+}
+
+doInstall
