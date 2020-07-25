@@ -29,11 +29,12 @@ enableAutoPartition=true
 autoPartitionDevice="/dev/sda"
 ## Partition size
 homePartitionSize="+10G"
-rootPartitionSize="20G"
+rootPartitionSize="+20G"
 
+# Deprecated
 # Mirror List
 # By default, aliyun and tuna is preferred
 ## Whether modify mirror list
-enableChangeMirrorList=true
-mirrorList1="Server = http:\/\/mirrors.tuna.tsinghua.edu.cn\/archlinux\/$repo\/os\/$arch"
-mirrorList2="Server = http:\/\/mirrors.aliyun.com\/archlinux\/$repo\/os\/$arch"
+#enableChangeMirrorList=true
+#mirrorList1="Server = http:\/\/mirrors.tuna.tsinghua.edu.cn\/archlinux\/$repo\/os\/$arch"
+#mirrorList2="Server = http:\/\/mirrors.aliyun.com\/archlinux\/$repo\/os\/$arch"

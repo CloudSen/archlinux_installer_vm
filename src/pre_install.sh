@@ -82,12 +82,13 @@ EOF
     mount /dev/sda2 /mnt/home
 }
 
+# deprecated
 function changeMirrorList() {
     echo "[MIRROR-LIST] --------------------"  >> ./log/info.log
     echo "[ PRE-INSTALL ] Add ${mirrorList1}" >> ./log/info.log
-    sed -i '1s/^/"${mirrorList1}"\n/' /etc/pacman.d/mirrorlist
+    sed -i "1s/^/${mirrorList1}\n/" /etc/pacman.d/mirrorlist
     echo "[ PRE-INSTALL ] Add ${mirrorList2}" >> ./log/info.log
-    sed -i '1s/^/"${mirrorList2}"\n/' /etc/pacman.d/mirrorlist
+    sed -i "1s/^/${mirrorList2}\n/" /etc/pacman.d/mirrorlist
     head -2 /etc/pacman.d/mirrorlist >> ./log/info.log
 }
 
@@ -150,7 +151,6 @@ function doPreInstall() {
     checkNetwork
     setTime
     autoPartition
-    changeMirrorList
     doPacstrap
     doChroot
     doInstall
