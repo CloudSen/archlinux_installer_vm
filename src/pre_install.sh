@@ -55,7 +55,8 @@ function setTime() {
 # line terminated with a newline to take the fdisk default.
 function autoPartition() {
     echo "[PARTITION] --------------------"  >> ./log/info.log
-    echo "[ PRE-INSTALL ] Automically partitioning ${autoPartitionDevice} ..." >> ./log/info.log
+    echo "[ PRE-INSTALL ] Automically partitioning ${autoPartitionDevice}..." >> ./log/info.log
+    echo "[ PRE-INSTALL ] rootPartitionSize = ${rootPartitionSize}..." >> ./log/info.log
     sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<- EOF | fdisk ${autoPartitionDevice}
     o # clear the in memory partition table
     n # new partition
@@ -74,7 +75,7 @@ function autoPartition() {
 EOF
     echo "[ PRE-INSTALL ] Formating partitions..." >> ./log/info.log
     mkfs.ext4 /dev/sda1
-    mkfs.ext4 /dev/sda3
+    mkfs.ext4 /dev/sda2
     echo "[ PRE-INSTALL ] Mounting partitions..." >> ./log/info.log
     mount /dev/sda1 /mnt
     mkdir -p /mnt/home
@@ -83,8 +84,10 @@ EOF
 
 function changeMirrorList() {
     echo "[MIRROR-LIST] --------------------"  >> ./log/info.log
-    sed -i '1s/^/${mirrorList1}\n/' /etc/pacman.d/mirrorlist
-    sed -i '1s/^/${mirrorList2}\n/' /etc/pacman.d/mirrorlist
+    echo "[ PRE-INSTALL ] Add ${mirrorList1}" >> ./log/info.log
+    sed -i '1s/^/"${mirrorList1}"\n/' /etc/pacman.d/mirrorlist
+    echo "[ PRE-INSTALL ] Add ${mirrorList2}" >> ./log/info.log
+    sed -i '1s/^/"${mirrorList2}"\n/' /etc/pacman.d/mirrorlist
     head -2 /etc/pacman.d/mirrorlist >> ./log/info.log
 }
 
@@ -98,6 +101,7 @@ function doPacstrap() {
 function doChroot() {
     echo "[CHROOT] --------------------"  >> ./log/info.log
     arch-chroot /mnt
+    echo "[ PRE-INSTALL ] $(pwd)" >> ./log/info.log
 }
 
 function doInstall() {
@@ -118,8 +122,20 @@ function configSystem() {
     echo ${hostName} > /etc/hostname
     echo "[ PRE-INSTALL ] Setting hosts ..." >> ./log/info.log
     source ./src/hosts_template.sh > etc/hosts
+    if [[ -z ${rootPassword} ]]; then
+        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh"
+        exit 127
+    fi
     echo "[ PRE-INSTALL ] Changing root passwd to ${rootPassword} ..." >> ./log/info.log
     echo "root:${rootPassword}" | chpasswd
+    if [[ -z ${username} ]]; then
+        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh"
+        exit 127
+    fi
+    if [[ -z ${password} ]]; then
+        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh"
+        exit 127
+    fi
     echo "[ PRE-INSTALL ] Creating user ${username} with passwod ${password} ..." >> ./log/info.log
     useradd -m -G wheel -s /bin/bash ${username}
     echo "${username}:${password}" | chpasswd
