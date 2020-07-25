@@ -28,7 +28,7 @@ function checkNetwork() {
     fi
     echo "[ PRE-INSTALL ] Connect to www.baidu.com" >> ./log/info.log
     curl -I http://www.baidu.com 1>>./log/info.log 2>>./log/error.log
-    curl -Is http://www.baidu.com | head 1 | grep 200
+    curl -Is http://www.baidu.com | head -1 | grep 200
     if [[ $? -eq 0 ]]; then
         echo "[ PRE-INSTALL ] You are online" >> ./log/info.log
     else
@@ -56,7 +56,7 @@ function setTime() {
 function autoPartition() {
     echo "[PARTITION] --------------------"  >> ./log/info.log
     echo "[ PRE-INSTALL ] Automically partitioning ${autoPartitionDevice} ..." >> ./log/info.log
-    sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk ${autoPartitionDevice}
+    sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<- EOF | fdisk ${autoPartitionDevice}
     o # clear the in memory partition table
     n # new partition
     p # primary partition
@@ -71,7 +71,7 @@ function autoPartition() {
     p # print the in-memory partition table
     w # write the partition table
     q # and we're done
-    EOF
+EOF
     echo "[ PRE-INSTALL ] Formating partitions..." >> ./log/info.log
     mkfs.ext4 /dev/sda1
     mkfs.ext4 /dev/sda3

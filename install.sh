@@ -10,5 +10,11 @@
 source ./conf/config.sh
 source ./src/pre_install.sh
 
-clean
+clear
+if [[ -d ./log ]]; then
+    rm -f ./log/info.log
+    rm -f ./log/error.log
+else
+    mkdir ./log
+fi
 doPreInstall
