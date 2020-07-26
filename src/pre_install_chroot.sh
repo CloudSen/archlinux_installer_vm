@@ -23,6 +23,7 @@ function configSystem() {
     mv /etc/locale.gen /etc/locale.gen.bak
     source .${templatePath}/locale_gen_template.sh > etc/locale.gen
     locale-gen &>>${infoPath}
+    echo "LANG=\"en_US.UTF-8\"" >> /etc/locale.conf
 
     echo "[ PRE-INSTALL ] Setting hostname ${hostName} ..." >> ${infoPath}
     echo ${hostName} > /etc/hostname
@@ -57,8 +58,8 @@ function createUser() {
 
 function configGrub() {
     echo "[CONFIG-GRUB] --------------------"  >> ${infoPath}
-    grub-install --target=i386-pc ${grubDevice}
-    grub-mkconfig -o /boot/grub/grub.cfg
+    grub-install --target=i386-pc ${grubDevice} &>> ${infoPath}
+    grub-mkconfig -o /boot/grub/grub.cfg &>> ${infoPath}
 }
 
 function installDone() {
