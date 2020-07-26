@@ -10,7 +10,7 @@ templatePath="/archlinux_installer_vm/src/template/"
 function installSoft() {
     echo "[INSTALL-CORE-SOFT] --------------------"  >> ${infoPath}
     echo "[ PRE-INSTALL ] Install core soft..." >> ${infoPath}
-    pacman -S ${coreSoft}
+    yes | pacman -S ${coreSoft}
 }
 
 function configSystem() {
