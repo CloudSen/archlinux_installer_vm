@@ -40,7 +40,7 @@ function createUser() {
         exit 127
     fi
     echo "[ PRE-INSTALL ] Changing root passwd to ${rootPassword} ..." >> ${infoPath}
-    echo "root:${rootPassword}" | chpasswd
+    echo "root:${rootPassword}" | chpasswd 2>${errorPath}
     if [[ -z ${username} ]]; then
         echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh" >> ../log/error.log
         exit 127
@@ -50,8 +50,8 @@ function createUser() {
         exit 127
     fi
     echo "[ PRE-INSTALL ] Creating user ${username} with passwod ${password} ..." >> ${infoPath}
-    useradd -m -G wheel -s /bin/bash ${username}
-    echo "${username}:${password}" | chpasswd
+    useradd -m -G wheel -s /bin/bash ${username} 2>${errorPath}
+    echo "${username}:${password}" | chpasswd 2>${errorPath}
     echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 }
 

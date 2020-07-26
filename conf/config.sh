@@ -41,7 +41,7 @@ rootPartitionSize="+20G"
 
 # What u want to install, separated by space.
 enableGraphic=true
-coreSoft="dialog wpa_supplicant ntfs-3g networkmanager network-manager-applet screenfetch intel-ucode grub"
+coreSoft="vim dialog wpa_supplicant ntfs-3g networkmanager network-manager-applet screenfetch intel-ucode grub"
 dailySoft="git"
 graphicEnvironment="xorg plasma kde-applications sddm"
 vmTools="gtkmm3 open-vm-tools xf86-input-vmmouse xf86-video-vmware"
