@@ -18,7 +18,7 @@ function checkConfig() {
 function doInstall() {
     clear
     checkConfig
-    doPreInstall
+    doPostInstall
 }
 
 doInstall
