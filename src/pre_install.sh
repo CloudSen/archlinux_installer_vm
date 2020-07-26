@@ -100,61 +100,28 @@ function doPacstrap() {
     cat /mnt/etc/fstab >> ./log/info.log
 }
 
+function copySecondScriptToChroot() {
+    local path="/mnt/archlinux_installer_vm"
+    echo "[COPY-SCRIPT] --------------------"  >> ./log/info.log
+    echo "[ PRE-INSTALL ] Copy shell to ${path}" >> ./log/info.log
+    mkdir -p ${path}
+    cp . ${path}
+}
+
 function doChroot() {
     echo "[CHROOT] --------------------"  >> ./log/info.log
-    arch-chroot /mnt
-    echo "[ PRE-INSTALL ] $(pwd)" >> ./log/info.log
-}
-
-function doInstall() {
-    echo "[INSTALL] --------------------"  >> ./log/info.log
-    pacman -S vim dialog wpa_supplicant ntfs-3g networkmanager
-}
-
-function configSystem() {
-    echo "[CONFIG] --------------------"  >> ./log/info.log
-    echo "[ PRE-INSTALL ] Setting localtime..." >> ./log/info.log
-    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    hwclock --systohc
-    echo "[ PRE-INSTALL ] Setting locale.gen..." >> ./log/info.log
-    mv /etc/locale.gen /etc/locale.gen.bak
-    source ./src/locale_gen_template.sh > etc/locale.gen
-    locale-gen &>>./log/info.log
-    echo "[ PRE-INSTALL ] Setting hostname ${hostName} ..." >> ./log/info.log
-    echo ${hostName} > /etc/hostname
-    echo "[ PRE-INSTALL ] Setting hosts ..." >> ./log/info.log
-    source ./src/hosts_template.sh > etc/hosts
-    if [[ -z ${rootPassword} ]]; then
-        echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh" >> ./log/error.log
-        exit 127
-    fi
-    echo "[ PRE-INSTALL ] Changing root passwd to ${rootPassword} ..." >> ./log/info.log
-    echo "root:${rootPassword}" | chpasswd
-    if [[ -z ${username} ]]; then
-        echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh" >> ./log/error.log
-        exit 127
-    fi
-    if [[ -z ${password} ]]; then
-        echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh" >> ./log/error.log
-        exit 127
-    fi
-    echo "[ PRE-INSTALL ] Creating user ${username} with passwod ${password} ..." >> ./log/info.log
-    useradd -m -G wheel -s /bin/bash ${username}
-    echo "${username}:${password}" | chpasswd
-    echo "[ PRE-INSTALL ] Installing grub2..." >> ./log/info.log
-    pacman -S intel-ucode grub
-    grub-install --target=i386-pc ${grubDevice}
-    grub-mkconfig -o /boot/grub/grub.cfg
+    arch-chroot /mnt ./archlinux_installer_vm/src/pre_install_chroot.sh
 }
 
 function doPreInstall() {
     checkBootMode
     checkNetwork
     setTime
-    autoPartition
+    if [[ "${enableAutoPartition}" == true ]]; then
+        autoPartition
+    fi
     doPacstrap
+    copySecondScriptToChroot
     doChroot
-    doInstall
-    configSystem
     echo "[ PRE-INSTALL ] Done" >> ./log/info.log
 }

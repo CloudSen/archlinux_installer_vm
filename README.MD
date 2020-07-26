@@ -3,16 +3,16 @@
 ## CAUTION
 This script is for:
 - System: Arch Linux
-- Container: VMware or VirtualBox
+- Container: VMware or VirtualBox (Not yet tested on hardware)
 - Boot Mode: BIOS&UEFI (auto check)
 - Network Status: Online
 
 ## HOW TO USE
 
-Load arch linux ISO, then [download release file](https://github.com/CloudSen/archlinux_installer_vm/releases):  
+Load arch linux live ISO, then [download release file](https://github.com/CloudSen/archlinux_installer_vm/releases):  
 
 ```
-curl -sL https://github.com/CloudSen/archlinux_installer_vm/archive/<release-version>.tar.gz
+curl -sL https://github.com/CloudSen/archlinux_installer_vm/archive/<release-version>.tar.gz -o <release-version>.tar.gz
 ```
 Decompression `<release-version>.tar.gz`:  
 
@@ -47,6 +47,13 @@ Run shell:
 Check log files: `log/info.log` and `log/error.log`
 
 ## CONFIGURATION FILE
+
+You must specify:  
+
+- new username
+- new user password
+- root password
+- grub install device
 
 ```
 # 0:LAN 1:WIFI
@@ -98,3 +105,8 @@ Pre-install:
 - networkmanager
 - intel-ucode
 - grub
+
+Post-install:  
+
+- git
+- The soft list specified in config.sh

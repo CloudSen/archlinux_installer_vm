@@ -38,3 +38,9 @@ rootPartitionSize="+20G"
 #enableChangeMirrorList=true
 #mirrorList1="Server = http:\/\/mirrors.tuna.tsinghua.edu.cn\/archlinux\/$repo\/os\/$arch"
 #mirrorList2="Server = http:\/\/mirrors.aliyun.com\/archlinux\/$repo\/os\/$arch"
+
+# What u want to install, separated by space.
+enableGraphic=true
+dailySoft="git screenfetch intel-ucode grub"
+graphicEnvironment="xorg plasma kde-applications sddm"
+vmTools="gtkmm3 open-vm-tools xf86-input-vmmouse xf86-video-vmware"
