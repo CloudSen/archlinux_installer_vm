@@ -83,14 +83,14 @@ EOF
     mount /dev/sda2 /mnt/home
 }
 
-# deprecated
 function changeMirrorList() {
     echo "[MIRROR-LIST] --------------------"  >> ./log/info.log
-    echo "[ PRE-INSTALL ] Add ${mirrorList1}" >> ./log/info.log
-    sed -i "1s/^/${mirrorList1}\n/" /etc/pacman.d/mirrorlist
-    echo "[ PRE-INSTALL ] Add ${mirrorList2}" >> ./log/info.log
-    sed -i "1s/^/${mirrorList2}\n/" /etc/pacman.d/mirrorlist
-    head -2 /etc/pacman.d/mirrorlist >> ./log/info.log
+    pacman -Syu
+    if [[ -f /etc/pacman.d/mirrorlist.bak ]]; then
+        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+    fi
+    reflector --verbose --country China --sort rate --save /etc/pacman.d/mirrorlist 2>>./log/error.log 1>>./log/info.log
+    head -30 /etc/pacman.d/mirrorlist >> ./log/info.log
 }
 
 function doPacstrap() {
@@ -121,6 +121,7 @@ function doPreInstall() {
     if [[ "${enableAutoPartition}" == true ]]; then
         autoPartition
     fi
+    changeMirrorList
     doPacstrap
     copySecondScriptToChroot
     doChroot

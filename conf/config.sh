@@ -31,14 +31,6 @@ autoPartitionDevice="/dev/sda"
 homePartitionSize="+10G"
 rootPartitionSize="+20G"
 
-# Deprecated
-# Mirror List
-# By default, aliyun and tuna is preferred
-## Whether modify mirror list
-#enableChangeMirrorList=true
-#mirrorList1="Server = http:\/\/mirrors.tuna.tsinghua.edu.cn\/archlinux\/$repo\/os\/$arch"
-#mirrorList2="Server = http:\/\/mirrors.aliyun.com\/archlinux\/$repo\/os\/$arch"
-
 # What u want to install, separated by space.
 enableGraphic=true
 coreSoft="vim dialog wpa_supplicant ntfs-3g networkmanager network-manager-applet screenfetch intel-ucode grub"
