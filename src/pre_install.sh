@@ -105,7 +105,7 @@ function copySecondScriptToChroot() {
     echo "[COPY-SCRIPT] --------------------"  >> ./log/info.log
     echo "[ PRE-INSTALL ] Copy shell to ${path}" >> ./log/info.log
     mkdir -p ${path}
-    cp . ${path}
+    cp -r . ${path}
 }
 
 function doChroot() {
