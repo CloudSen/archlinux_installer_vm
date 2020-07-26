@@ -29,7 +29,7 @@ cd <path to shell>
 Give the script permission to execute:  
 
 ```
-find . -name "*.sh" -exedir chmod +x {} +
+find . -name "*.sh" -execdir chmod +x {} +
 ```
 
 Check and modify configuraion file:  
