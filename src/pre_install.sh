@@ -111,7 +111,7 @@ function copySecondScriptToChroot() {
 
 function doChroot() {
     echo "[CHROOT] --------------------"  >> ./log/info.log
-    arch-chroot /mnt /bin/bash /mnt/archlinux_installer_vm/src/pre_install_chroot.sh
+    arch-chroot /mnt ./archlinux_installer_vm/src/pre_install_chroot.sh
 }
 
 function doPreInstall() {
