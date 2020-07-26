@@ -48,6 +48,7 @@ After reboot run install shell:
 
 ```
 cd /archlinux_installer_vm
+find . -name "*.sh" -execdir chmod +x {} +
 ./install.sh
 ```
 
