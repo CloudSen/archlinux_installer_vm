@@ -71,12 +71,11 @@ function autoPartition() {
         # default, start immediately after preceding partition
         # default, home partition size, extend partition to end of disk
     p # print the in-memory partition table
-    w # write the partition table
-    q # and we're done
+    w # write the partition table and exit
 EOF
     echo "[ PRE-INSTALL ] Formating partitions..." >> ./log/info.log
-    mkfs.ext4 /dev/sda1
-    mkfs.ext4 /dev/sda2
+    mkfs.ext4 /dev/sda1 &>> ./log/info.log
+    mkfs.ext4 /dev/sda2 &>> ./log/info.log
     echo "[ PRE-INSTALL ] Mounting partitions..." >> ./log/info.log
     mount /dev/sda1 /mnt
     mkdir -p /mnt/home
@@ -85,17 +84,24 @@ EOF
 
 function changeMirrorList() {
     echo "[MIRROR-LIST] --------------------"  >> ./log/info.log
-    pacman -Syu
+    local success=127
+    pacman -Syy
+    local updatePid=$!
+    wait $updatePid
     if [[ -f /etc/pacman.d/mirrorlist.bak ]]; then
         cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
     fi
-    reflector --verbose --country China --sort rate --save /etc/pacman.d/mirrorlist 2>>./log/error.log 1>>./log/info.log
+    while [[ ${success} -ne 0 ]]; do
+        echo "[ PRE-INSTALL ] Sort mirror list..." >> ./log/error.log
+        reflector --verbose --country China --sort rate --save /etc/pacman.d/mirrorlist 2>>./log/error.log 1>>./log/info.log
+        success=$?
+    done
     head -30 /etc/pacman.d/mirrorlist >> ./log/info.log
 }
 
 function doPacstrap() {
     echo "[PACSTRAP] --------------------"  >> ./log/info.log
-    pacstrap /mnt base base-devel
+    pacstrap /mnt base base-devel linux linux-firmware
     genfstab -U /mnt >> /mnt/etc/fstab
     cat /mnt/etc/fstab >> ./log/info.log
 }
