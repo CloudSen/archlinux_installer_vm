@@ -2,9 +2,9 @@
 
 ## CAUTION
 This script is for:
-- System: Arch Linux
+- Version: Arch Linux 2020.07.01 or later
 - Container: VMware or VirtualBox (Not yet tested on hardware)
-- Boot Mode: BIOS&UEFI (auto check)
+- Boot Mode: BIOS&UEFI (UEFI is not supported yet)
 - Network Status: Online
 
 ## HOW TO USE
@@ -38,9 +38,16 @@ Check and modify configuraion file:
 vim conf/config.sh
 ```
 
-Run shell:  
+Run init shell:  
 
 ```
+./init.sh
+```
+
+After reboot run install shell:
+
+```
+cd /archlinux_installer_vm
 ./install.sh
 ```
 
@@ -85,28 +92,29 @@ autoPartitionDevice="/dev/sda"
 homePartitionSize="+10G"
 rootPartitionSize="+20G"
 
-# Mirror List
-# By default, aliyun and tuna is preferred
-## Whether modify mirror list
-enableChangeMirrorList=true
-mirrorList1="Server = http:\/\/mirrors.tuna.tsinghua.edu.cn\/archlinux\/$repo\/os\/$arch"
-mirrorList2="Server = http:\/\/mirrors.aliyun.com\/archlinux\/$repo\/os\/$arch"
+# What u want to install, separated by space.
+enableGraphic=true
+coreSoft="vim dialog wpa_supplicant ntfs-3g networkmanager network-manager-applet screenfetch intel-ucode grub"
+dailySoft="git"
+graphicEnvironment="xorg plasma kde-applications sddm"
+vmTools="gtkmm3 open-vm-tools xf86-input-vmmouse xf86-video-vmware"
 ```
 
 ## WHAT WILL BE INSTALLED
 
 Pre-install:  
 
-- Arch Linux: base base-devel
+- Arch Linux: base base-devel linux linux-firmware
 - vim
 - dialog
 - wpa_supplicant
 - ntfs-3g
 - networkmanager
+- network-manager-applet
+- screenfetch
 - intel-ucode
 - grub
 
 Post-install:  
 
-- git
 - The soft list specified in config.sh
