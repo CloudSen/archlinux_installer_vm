@@ -4,6 +4,12 @@
 
 infoPath="./log/info.log"
 
+function enableNetwork() {
+    echo "[ENABLE-NETWORK] --------------------"  >> ${infoPath}
+    systemctl --now enable NetworkManager.service
+    systemctl status NetworkManager.service &>> ${infoPath}
+}
+
 function installSoft() {
     echo "[INSTALL-DAILY-SOFT] --------------------"  >> ${infoPath}
     echo "[ POST-INSTALL ] Install pop-soft..." >> ${infoPath}
