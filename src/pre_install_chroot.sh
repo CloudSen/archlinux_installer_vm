@@ -2,47 +2,44 @@
 # Author: CloudS3n https://yangyunsen.com
 # Description: Prepare the installation environment in chroot
 
-source ../conf/config.sh
+source /archlinux_installer_vm/conf/config.sh
+infoPath="/archlinux_installer_vm/log/info.log"
+errorPath="/archlinux_installer_vm/log/error.log"
+templatePath="/archlinux_installer_vm/src/template/"
 
 function installSoft() {
-    echo "[INSTALL] --------------------"  >> ../log/info.log
-    echo "[ PRE-INSTALL ] Install core soft..." >> ../log/info.log
-    pacman -S dialog wpa_supplicant ntfs-3g networkmanager network-manager-applet
-    echo "[ PRE-INSTALL ] Install pop-soft..." >> ../log/info.log
-    pacman -S ${dailySoft}
-    if [[ "${enableGraphic}" == true ]]; then
-    echo "[ PRE-INSTALL ] Install graphic env..." >> ../log/info.log
-        pacman -S ${graphicEnvironment}
-    fi
-    echo "[ PRE-INSTALL ] Install vmware tools..." >> ../log/info.log
-    pacman -S ${vmTools}
+    echo "[INSTALL-CORE-SOFT] --------------------"  >> ${infoPath}
+    echo "[ PRE-INSTALL ] Install core soft..." >> ${infoPath}
+    pacman -S ${coreSoft}
 }
 
 function configSystem() {
-    echo "[CONFIG-SYSTEM] --------------------"  >> ../log/info.log
-    echo "[ PRE-INSTALL ] Setting localtime..." >> ../log/info.log
+    echo "[CONFIG-SYSTEM] --------------------"  >> ${infoPath}
+    echo "[ PRE-INSTALL ] Setting localtime..." >> ${infoPath}
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     hwclock --systohc
 
-    echo "[ PRE-INSTALL ] Setting locale.gen..." >> ../log/info.log
+    echo "[ PRE-INSTALL ] Setting locale.gen..." >> ${infoPath}
     mv /etc/locale.gen /etc/locale.gen.bak
-    source ./template/locale_gen_template.sh > etc/locale.gen
-    locale-gen &>>../log/info.log
+    source .${templatePath}/locale_gen_template.sh > etc/locale.gen
+    locale-gen &>>${infoPath}
 
-    echo "[ PRE-INSTALL ] Setting hostname ${hostName} ..." >> ../log/info.log
+    echo "[ PRE-INSTALL ] Setting hostname ${hostName} ..." >> ${infoPath}
     echo ${hostName} > /etc/hostname
+    cat /etc/hostname >> ${infoPath}
 
-    echo "[ PRE-INSTALL ] Setting hosts ..." >> ../log/info.log
-    source ./template/hosts_template.sh > etc/hosts
+    echo "[ PRE-INSTALL ] Setting hosts ..." >> ${infoPath}
+    source ${templatePath}/hosts_template.sh > etc/hosts
+    cat /etc/hosts >> ${infoPath}
 }
 
 function createUser() {
-    echo "[CONFIG-USER] --------------------"  >> ../log/info.log
+    echo "[CONFIG-USER] --------------------"  >> ${infoPath}
     if [[ -z ${rootPassword} ]]; then
         echo "[ PRE-INSTALL ] Please specify root password in conf/config.sh" >> ../log/error.log
         exit 127
     fi
-    echo "[ PRE-INSTALL ] Changing root passwd to ${rootPassword} ..." >> ../log/info.log
+    echo "[ PRE-INSTALL ] Changing root passwd to ${rootPassword} ..." >> ${infoPath}
     echo "root:${rootPassword}" | chpasswd
     if [[ -z ${username} ]]; then
         echo "[ PRE-INSTALL ] Please specify new username in conf/config.sh" >> ../log/error.log
@@ -52,55 +49,26 @@ function createUser() {
         echo "[ PRE-INSTALL ] Please specify new password in conf/config.sh" >> ../log/error.log
         exit 127
     fi
-    echo "[ PRE-INSTALL ] Creating user ${username} with passwod ${password} ..." >> ../log/info.log
+    echo "[ PRE-INSTALL ] Creating user ${username} with passwod ${password} ..." >> ${infoPath}
     useradd -m -G wheel -s /bin/bash ${username}
     echo "${username}:${password}" | chpasswd
+    echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 }
 
 function configGrub() {
-    echo "[CONFIG-GRUB] --------------------"  >> ../log/info.log
+    echo "[CONFIG-GRUB] --------------------"  >> ${infoPath}
     grub-install --target=i386-pc ${grubDevice}
     grub-mkconfig -o /boot/grub/grub.cfg
 }
 
-function enableService() {
-    echo "[CONFIG-SYSTEMD] --------------------"  >> ../log/info.log
-
-    echo "[ PRE-INSTALL ] Enable dhcpcd" >> ../log/info.log
-    systemctl enable dhcpcd
-
-    if [[ "${enableGraphic}" == true ]]; then
-        echo "[ PRE-INSTALL ] Enable sddm" >> ../log/info.log
-        systemctl enable sddm
-    fi
-
-    echo "[ PRE-INSTALL ] Enable NetworkManager" >> ../log/info.log
-    systemctl disable netctl
-    systemctl enable NetworkManager
-
-    echo "[ PRE-INSTALL ] Enable vmtools" >> ../log/info.log
-    cat /proc/version > /etc/arch-release
-    systemctl  enable vmtoolsd
-    systemctl  start vmtoolsd 
-    systemctl  enable vmware-vmblock-fuse.service
-    systemctl  start vmware-vmblock-fuse.service
-}
-
-fucntion installDone() {
-    echo "[DONE] --------------------"  >> ../log/info.log
-    screenfetch &>> ../log/info.log
-    systemctl status dhcpcd.service &>> ../log/info.log
-    if [[ "${enableGraphic}" == true ]]; then
-        systemctl status sddm.service &>> ../log/info.log
-    fi
-    systemctl status NetworkManager.service &>> ../log/info.log
-    systemctl status vmtoolsd.service &>> ../log/info.log
-    systemctl status vmware-vmblock-fuse.service &>> ../log/info.log
-    echo echo "[PRE-INSTALL] Done"  >> ../log/info.log
-    echo echo "[PRE-INSTALL] You can check installation log in /archlinux_installer_vm/log/"  >> ../log/info.log
-    echo echo "[PRE-INSTALL] If everything is ok, then exit chroot and reboot system"  >> ../log/info.log
+function installDone() {
+    echo "[PRE-INSTALL-DONE] --------------------"  >> ${infoPath}
+    screenfetch &>> ${infoPath}
+    echo "[PRE-INSTALL] Done"  >> ${infoPath}
+    echo "[PRE-INSTALL] You can check installation log in /archlinux_installer_vm/log/"  >> ${infoPath}
+    echo "[PRE-INSTALL] If everything is ok, then exit chroot and reboot system, and manually run install.sh"  >> ${infoPath}
     clear
-    more ../log/info.log
+    more ${infoPath}
 }
 
 function doInstall() {
@@ -108,7 +76,6 @@ function doInstall() {
     configSystem
     createUser
     configGrub
-    enableService
     installDone
 }
 
