@@ -72,11 +72,16 @@ function installDone() {
     more ${infoPath}
 }
 
+function enableService() {
+    systemctl enable NetworkManager && systemctl start NetworkManager
+}
+
 function doInstall() {
     installSoft
     configSystem
     createUser
     configGrub
+    enableService
     installDone
 }
 
