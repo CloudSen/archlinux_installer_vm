@@ -6,7 +6,7 @@ infoPath="./log/info.log"
 
 function enableNetwork() {
     echo "[ENABLE-NETWORK] --------------------"  >> ${infoPath}
-    systemctl --now enable NetworkManager.service
+    systemctl --now enable NetworkManager.service && systemctl start NetworkManager.service
     systemctl status NetworkManager.service &>> ${infoPath}
 }
 
@@ -65,6 +65,7 @@ function installDone() {
 
 
 function doPostInstall() {
+    enableNetwork
     installSoft
     enableService
     installDone
