@@ -1,10 +1,11 @@
 # ARCH LINUX INSTALLER FOR VIRTUAL MACHINE
+> Semi-automatic
 
 ## CAUTION
 This script is for:
 - Version: Arch Linux 2020.07.01 or later
-- Container: VMware or VirtualBox (Not yet tested on hardware)
-- Boot Mode: BIOS&UEFI (UEFI is not supported yet)
+- Container: VMware(Not yet tested on hardware)
+- Boot Mode: BIOS
 - Network Status: Online
 
 ## HOW TO USE
@@ -95,6 +96,7 @@ rootPartitionSize="+20G"
 
 # What u want to install, separated by space.
 enableGraphic=true
+# If using Intel cpu then choose intel-ucode, If using AMD cpu then choose amd-ucode
 coreSoft="vim dialog wpa_supplicant ntfs-3g networkmanager network-manager-applet screenfetch intel-ucode grub"
 dailySoft="git"
 graphicEnvironment="xorg plasma kde-applications sddm"
