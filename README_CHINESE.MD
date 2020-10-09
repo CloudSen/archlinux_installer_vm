@@ -1,51 +1,51 @@
 # ARCH LINUX INSTALLER FOR VIRTUAL MACHINE
-> Semi-automatic
+> 半自动化
 
-## CAUTION
-This script is for:
-- Version: Arch Linux 2020.07.01 or later
-- Container: VMware(Not yet tested on hardware)
-- Boot Mode: BIOS
-- Network Status: Online
+## 注意
+此脚本适用于:
+- 版本: Arch Linux 2020.07.01以上版本
+- 容器: VMware(还未在硬件进行测试)
+- 启动模式: BIOS
+- 网络状态: 在线
 
-## HOW TO USE
+## 如何使用
 
-Load arch linux live ISO, then [download release file](https://github.com/CloudSen/archlinux_installer_vm/releases):  
+加载 arch linux live ISO 镜像, 然后 [下载此脚本的发行版本](https://github.com/CloudSen/archlinux_installer_vm/releases):  
 
 ```
 curl -sL https://github.com/CloudSen/archlinux_installer_vm/archive/<release-version>.tar.gz -o <release-version>.tar.gz
 ```
-Decompression `<release-version>.tar.gz`:  
+解压 `<release-version>.tar.gz`:  
 
 ```
 tar zxf <path to .tar.gz>
 ```
 
-Move to shell directory:  
+进入脚本目录:  
 
 ```
 cd <path to shell>
 ```
 
-Give the script permission to execute:  
+赋予脚本可执行权限:  
 
 ```
 find . -name "*.sh" -execdir chmod +x {} +
 ```
 
-Check and modify configuraion file:  
+检查并修改配置文件:  
 
 ```
 vim conf/config.sh
 ```
 
-Run init shell:  
+运行init脚本:  
 
 ```
 ./init.sh
 ```
 
-After reboot run install shell:
+然后重启，重启后运行install脚本:
 
 ```
 cd /archlinux_installer_vm
@@ -53,16 +53,18 @@ find . -name "*.sh" -execdir chmod +x {} +
 ./install.sh
 ```
 
-Check log files: `log/info.log` and `log/error.log`
+查看日志文件: `log/info.log` and `log/error.log`
 
-## CONFIGURATION FILE
+## 配置文件说明
 
-You must specify:  
+你必须指定以下配置项:  
 
-- new username
-- new user password
-- root password
-- grub install path
+- 新用户的用户名
+- 新用户的密码
+- root用户的密码
+- 安装grub的路径 
+
+配置项案例：
 
 ```
 #!/bin/bash
@@ -110,9 +112,9 @@ graphicEnvironment="xorg plasma kde-applications sddm"
 vmTools="gtkmm3 open-vm-tools xf86-input-vmmouse xf86-video-vmware"
 ```
 
-## WHAT WILL BE INSTALLED
+## 安装内容
 
-Pre-install:  
+预安装项:  
 
 - Arch Linux: base base-devel linux linux-firmware
 - vim
@@ -125,11 +127,11 @@ Pre-install:
 - intel-ucode
 - grub
 
-Post-install:  
+环境安装项:  
 
-- The soft list specified in config.sh
+- 配置文件中您指定的所有软件
 
-## SUCCESS INSTALL FULL INFO LOG
+## 安装成功日志
 
 ```
 [MODE-CHECK] --------------------
@@ -163,8 +165,8 @@ mke2fs 1.45.6 (20-Mar-2020)
 Creating filesystem with 5242880 4k blocks and 1310720 inodes
 Filesystem UUID: c5aefc0a-38bc-46c8-860e-bcd78c192eaf
 Superblock backups stored on blocks: 
-	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
-	4096000
+    32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+    4096000
 
 Allocating group tables:   0/160       done                            
 Writing inode tables:   0/160       done                            
@@ -175,7 +177,7 @@ mke2fs 1.45.6 (20-Mar-2020)
 Creating filesystem with 2621184 4k blocks and 655360 inodes
 Filesystem UUID: f4c39d29-2bdb-4f22-98b2-c354a967556f
 Superblock backups stored on blocks: 
-	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
+    32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
 
 Allocating group tables:  0/80     done                            
 Writing inode tables:  0/80     done                            
@@ -213,10 +215,10 @@ Server = rsync://mirrors.neusoft.edu.cn/archlinux/$repo/os/$arch
 
 # <file system> <dir> <type> <options> <dump> <pass>
 # /dev/sda1
-UUID=c5aefc0a-38bc-46c8-860e-bcd78c192eaf	/         	ext4      	rw,relatime	0 1
+UUID=c5aefc0a-38bc-46c8-860e-bcd78c192eaf   /           ext4        rw,relatime 0 1
 
 # /dev/sda2
-UUID=f4c39d29-2bdb-4f22-98b2-c354a967556f	/home     	ext4      	rw,relatime	0 2
+UUID=f4c39d29-2bdb-4f22-98b2-c354a967556f   /home       ext4        rw,relatime 0 2
 
 [COPY-SCRIPT] --------------------
 [ PRE-INSTALL ] Copy shell to /mnt/archlinux_installer_vm
